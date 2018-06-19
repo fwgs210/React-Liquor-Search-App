@@ -94,7 +94,7 @@ img {
     color: inherit;
     text-decoration: none;
 }
-.item-list .thumb {
+.item-list .thumb img {
     text-align: center;
 }
 .item-list .detail {
