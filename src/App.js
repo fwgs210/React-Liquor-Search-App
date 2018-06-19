@@ -20,7 +20,7 @@ class App extends Component {
 
     this.setState({loading: !this.state.loading})
 
-    axios.get(`http://lcboapi.com/products?q=${this.state.searchItem}`,{
+    axios.get(`https://lcboapi.com/products?q=${this.state.searchItem}`,{
       headers: {
       'Authorization': 'Token MDpiNmQ4NjcwNi1jOTgyLTExZTctYjNkZC0yZjJiNzgxNTE3OWI6MkF6Z0thVUdMZFRibHV1YUdOWWloSnd3ZFhrNXRPVW1HYzI2'
       }
@@ -54,7 +54,7 @@ class App extends Component {
 
   getMoreItem = () => {
     if(this.state.isFinalPage != true && this.state.nextPage.length > 0) {
-      axios.get(`http://lcboapi.com/${this.state.nextPage}`,{
+      axios.get(`https://lcboapi.com/${this.state.nextPage}`,{
         headers: {
         'Authorization': 'Token MDpiNmQ4NjcwNi1jOTgyLTExZTctYjNkZC0yZjJiNzgxNTE3OWI6MkF6Z0thVUdMZFRibHV1YUdOWWloSnd3ZFhrNXRPVW1HYzI2'
         }

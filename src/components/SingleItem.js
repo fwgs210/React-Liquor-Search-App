@@ -20,7 +20,7 @@ class SingleItem extends Component {
 		this.setState({loading: !this.state.loading})
 
 		// get job info
-	    axios.get(`http://lcboapi.com/products/${jobId}`,{
+	    axios.get(`https://lcboapi.com/products/${jobId}`,{
 	      headers: {
 	      'Authorization': 'Token MDpiNmQ4NjcwNi1jOTgyLTExZTctYjNkZC0yZjJiNzgxNTE3OWI6MkF6Z0thVUdMZFRibHV1YUdOWWloSnd3ZFhrNXRPVW1HYzI2'
 	      }
