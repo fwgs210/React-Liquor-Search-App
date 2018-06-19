@@ -22,7 +22,7 @@ class App extends Component {
 
     axios.get(`https://lcboapi.com/products?q=${this.state.searchItem}`,{
       headers: {
-      'Authorization': 'Token MDpiNmQ4NjcwNi1jOTgyLTExZTctYjNkZC0yZjJiNzgxNTE3OWI6MkF6Z0thVUdMZFRibHV1YUdOWWloSnd3ZFhrNXRPVW1HYzI2'
+      'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
       }
     }).then(res => {
       if (res.data.result == 0 || !res.data) {
@@ -56,7 +56,7 @@ class App extends Component {
     if(this.state.isFinalPage != true && this.state.nextPage.length > 0) {
       axios.get(`https://lcboapi.com/${this.state.nextPage}`,{
         headers: {
-        'Authorization': 'Token MDpiNmQ4NjcwNi1jOTgyLTExZTctYjNkZC0yZjJiNzgxNTE3OWI6MkF6Z0thVUdMZFRibHV1YUdOWWloSnd3ZFhrNXRPVW1HYzI2'
+        'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
         }
       }).then(res => {
         if (res.data.result == 0 || !res.data) {

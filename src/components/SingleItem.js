@@ -22,7 +22,7 @@ class SingleItem extends Component {
 		// get job info
 	    axios.get(`https://lcboapi.com/products/${jobId}`,{
 	      headers: {
-	      'Authorization': 'Token MDpiNmQ4NjcwNi1jOTgyLTExZTctYjNkZC0yZjJiNzgxNTE3OWI6MkF6Z0thVUdMZFRibHV1YUdOWWloSnd3ZFhrNXRPVW1HYzI2'
+	      'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
 	      }
 	    }).then(res => {
 	      if (res.data.result.length == 0 || !res.data) {
