@@ -94,7 +94,7 @@ img {
     color: inherit;
     text-decoration: none;
 }
-.item-list .thumb img {
+.item-list .thumb {
     text-align: center;
 }
 .item-list .detail {
@@ -165,7 +165,7 @@ img {
     .search-input {
         margin-bottom: 10px;
     }
-    .item-list .thumb {
+    .item-list .thumb img {
         max-width: 120px;
     }
     .full-img img {
