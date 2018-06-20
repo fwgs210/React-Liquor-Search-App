@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Loader from './Loader';
 import Results from './Results';
-import PropTypes from "prop-types";
 
 class Main extends Component {
 

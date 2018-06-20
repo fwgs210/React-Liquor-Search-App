@@ -15,7 +15,7 @@ class Results extends Component {
 					{this.props.results.map((each, key) => {
 							const {id, image_thumb_url, name, tasting_note, origin} = each;
 	                          return (
-	                          	<article className="col-xs-12 col-sm-4 col-md-3" key={key}>
+	                          	<article className="col-xs-12 col-sm-6 col-md-3" key={key}>
 		                            <Link to={`/products/${id}`} id={id} className="item-list">
 		                            	<aside className="thumb">
 		                            		{image_thumb_url != null && image_thumb_url != undefined && image_thumb_url.length > 0 ? (

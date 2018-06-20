@@ -34,6 +34,7 @@ img {
     box-shadow: 0px 3px 8px -4px rgba(0,0,0,0.15);
     background-color: #fff;
     padding: 20px 30px;
+    margin: 10px 0;
 }
 .block h4 {
     margin-bottom: 5px;
@@ -108,6 +109,10 @@ img {
     margin-bottom: 0;
     margin-top: 5px;
 }
+.item-note {
+    background-color: #f8f8f8;
+    padding: 1px 30px;
+}
 .search-form {
     padding: 15px 0;
     margin-top: 20px;
@@ -137,7 +142,7 @@ img {
     line-height: 1.5;
     padding: 4px 1.5rem !important;
     min-width: 140px;
-    min-height: 50px;
+    height: 50px;
 }
 .load-button {
     margin: 3rem auto;
@@ -150,8 +155,28 @@ img {
     border-color: rgba(125,125,125,.5);
     outline: none;
 }
+.search-form.square {
+    margin-top: 0;
+}
+.search-button.square {
+    height: 35px;
+    border-radius: 0;
+    border-left: none;
+}
+.search-input.square {
+    height: 35px;
+    border-radius: 0;
+    margin: 0;
+    border-right: none;
+}
 .full-img {
     text-align: center;
+}
+.store-name {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f2f2f2;
 }
 @media all and (max-width: 768px) {
     .search-form, .search-input,.search-button {
@@ -170,5 +195,12 @@ img {
     }
     .full-img img {
         max-width: 150px;
+    }
+    .search-button.square {
+        border-left: 2px solid #ececec;
+    }
+    .search-input.square {
+        border-right: 2px solid #ececec;
+        margin-bottom: 10px;
     }
 }

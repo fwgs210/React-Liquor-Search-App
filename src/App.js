@@ -3,7 +3,6 @@ import Main from './components/Main';
 import SingleItem from './components/SingleItem';
 import { BrowserRouter, Route } from 'react-router-dom';
 import axios from 'axios';
-import PropTypes from "prop-types";
 
 
 class App extends Component {
@@ -25,12 +24,11 @@ class App extends Component {
       'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
       }
     }).then(res => {
-      if (res.data.result == 0 || !res.data) {
-        this.setState({loading: !this.state.loading})
-      } else {
+      if (res.status === 200 && res.data.result != undefined) {
         this.setState({results: res.data.result,loading: !this.state.loading})
         this.checkFinalPage(res.data.pager)
-        console.log(res.data)
+      } else {
+        this.setState({loading: !this.state.loading})
       }
       
     })
@@ -59,13 +57,12 @@ class App extends Component {
         'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
         }
       }).then(res => {
-        if (res.data.result == 0 || !res.data) {
-          this.setState({loading: !this.state.loading})
-        } else {
+        if (res.status === 200 && res.data.result != undefined) {
           const newResults = this.state.results.concat(res.data.result)
           this.setState({results: newResults,loading: !this.state.loading})
           this.checkFinalPage(res.data.pager)
-          console.log(res.data)
+        } else {
+          this.setState({loading: !this.state.loading})
         }
         
       })
