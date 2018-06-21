@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Stores from './Stores';
+import MapContainer from './Map';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 class SingleItem extends Component {
 
@@ -13,6 +15,7 @@ class SingleItem extends Component {
 		itemInfo: null,
 		stores: null,
 		city: '',
+		tabIndex: 0,
 		loading: false
 	}
 
@@ -22,7 +25,7 @@ class SingleItem extends Component {
 		
 		this.setState({loading: !this.state.loading})
 
-		// get job info
+		// get item info
 	    axios.get(`https://lcboapi.com/products/${itemId}`,{
 	      headers: {
 	      'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
@@ -68,7 +71,6 @@ class SingleItem extends Component {
 	      console.log(err.message)
 	    })
 	}
-
 
 	formattedPrice = (price) => {
 		let formattedPrice = price / 100;
@@ -116,7 +118,23 @@ class SingleItem extends Component {
 					                <input type="text" className="search-input square" onChange={this.getSearchItem} placeholder="City name, Intersection or Postal Code" required />
 					                <input type="submit" className="search-button square" value="Find"/>
 					            </form>
-					            <Stores stores={this.state.stores} />
+					            {this.state.stores ? (
+							           	<Tabs className="store-tabs" selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })}>
+											<TabList>
+										    	<Tab>List View</Tab>
+										    	<Tab>Map View</Tab>
+											</TabList>
+											<TabPanel>
+									            <Stores stores={this.state.stores} />
+											</TabPanel>
+											<TabPanel><article className="map-container">
+												<MapContainer stores={this.state.stores} /></article>
+											</TabPanel>
+										</Tabs>
+									) : (
+										<div></div>
+									)
+								}
 							</div>
 						</div>
 					</div>

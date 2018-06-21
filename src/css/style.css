@@ -110,7 +110,7 @@ img {
     margin-top: 5px;
 }
 .item-note {
-    background-color: #f8f8f8;
+    background-color: #f2f2f2;
     padding: 1px 30px;
 }
 .search-form {
@@ -172,11 +172,43 @@ img {
 .full-img {
     text-align: center;
 }
+.store-lists {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px 25px;
+    border: 1px solid #ededed;
+    border-top: none;
+}
 .store-name {
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #f2f2f2;
+}
+.map-container {
+    position: relative;
+    height: 360px;
+    border: 1px solid #ededed;
+    border-top: none;
+}
+.store-tabs ul {
+    padding-left: 0;
+    list-style-type: none;
+    display: flex;
+    margin-bottom: 0;
+    border-bottom: 1px solid #ededed;
+}
+.store-tabs ul li {
+    cursor: pointer;
+    padding: 10px 25px;
+    background-color: #f2f2f2;
+    border: 1px solid #f2f2f2;
+    border-bottom: none;
+    margin-bottom: -1px;
+}
+.store-tabs ul li.react-tabs__tab--selected {
+    border-color: #ededed;
+    background-color: #fff;
 }
 @media all and (max-width: 768px) {
     .search-form, .search-input,.search-button {
