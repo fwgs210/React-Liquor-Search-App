@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Stores from './Stores';
 import MapContainer from './Map';
+import Loader from './Loader';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 class SingleItem extends Component {
 
 	componentDidMount() {
-	    this.getItemDetail()
+	    const itemId = this.props.match.params.item || undefined;
+	    if (itemId != undefined) {
+	    	this.getItemDetail(itemId)
+	    }
 	}
 
 	state = {
@@ -19,9 +23,7 @@ class SingleItem extends Component {
 		loading: false
 	}
 
-	getItemDetail = () => {
-		const url = window.location.href.split('/');
-		const itemId = url[url.length - 1]
+	getItemDetail = (itemId) => {
 		
 		this.setState({loading: !this.state.loading})
 
@@ -33,6 +35,7 @@ class SingleItem extends Component {
 	    }).then(res => {
 	      if (res.status === 200 && res.data.result != undefined) {
 	      	this.setState({itemInfo: res.data.result,loading: !this.state.loading})
+	      	console.log(res.data)
 	      } else {
 	        this.setState({badRequest: true, loading: !this.state.loading})
 	      }
@@ -152,7 +155,7 @@ class SingleItem extends Component {
 		} else {
 			// show nothing
 			return (
-				<div></div>
+				<Loader />
 			)
 		}
 	}
