@@ -9,6 +9,10 @@ export class MapContainer extends Component {
 		}
 	}
 
+	componentWillReceiveProps(newProps) {
+		this.getMapCenter(newProps.stores[0])
+	}
+
 	state = {
 	    showingInfoWindow: false,
 	    activeMarker: {},

@@ -5,6 +5,8 @@ import MapContainer from './Map';
 import Loader from './Loader';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
+const MapContext = React.createContext();
+
 class SingleItem extends Component {
 
 	componentDidMount() {
@@ -22,6 +24,8 @@ class SingleItem extends Component {
 		tabIndex: 0,
 		loading: false
 	}
+
+
 
 	getItemDetail = (itemId) => {
 		
@@ -122,18 +126,32 @@ class SingleItem extends Component {
 					                <input type="submit" className="search-button square" value="Find"/>
 					            </form>
 					            {this.state.stores ? (
-							           	<Tabs className="store-tabs" selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })}>
-											<TabList>
-										    	<Tab>List View</Tab>
-										    	<Tab>Map View</Tab>
-											</TabList>
-											<TabPanel>
-									            <Stores stores={this.state.stores} />
-											</TabPanel>
-											<TabPanel><article className="map-container">
-												<MapContainer stores={this.state.stores} /></article>
-											</TabPanel>
-										</Tabs>
+						            	<MapContext.Provider value={this.state.stores}>
+								           	<Tabs className="store-tabs" selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })}>
+												<TabList>
+											    	<Tab>List View</Tab>
+											    	<Tab>Map View</Tab>
+												</TabList>
+												<TabPanel>
+													<MapContext.Consumer>
+      													{stores => (
+															<Stores stores={stores} />
+														)}
+													</MapContext.Consumer>
+												</TabPanel>
+												<TabPanel>
+													<article className="map-container">
+														<MapContext.Consumer>
+      														{stores => (
+																<MapContainer stores={stores} />
+															)}
+														</MapContext.Consumer>
+													</article>
+												</TabPanel>
+											</Tabs>
+										</MapContext.Provider>
+									) : this.state.loading ? (
+										<Loader />
 									) : (
 										<div></div>
 									)

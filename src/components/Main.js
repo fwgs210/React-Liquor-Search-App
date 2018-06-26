@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import Search from './Search';
 import Loader from './Loader';
 import Results from './Results';
-import PropTypes from "prop-types";
 import axios from 'axios';
+
+export const ProductsContext = React.createContext();
 
 class Main extends Component {
 
@@ -10,11 +12,13 @@ class Main extends Component {
     const searchItem = this.props.match.params.searchItem || undefined;
     if (searchItem != undefined) {
       this.search(searchItem)
+      this.setState({searchItem})
     }
   }
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired
+  componentWillReceiveProps(newProps) {
+    this.search(newProps.match.params.searchItem)
+
   }
 
   state = {
@@ -81,16 +85,7 @@ class Main extends Component {
     }
   }
 
-  handleSubmit = (e) =>{
-    // when someone submits the form, we need to do 3 things.
-    // 1. we need to stop the form from submitting
-    e.preventDefault();
-    // 2. grab the search query from the input box
-    const searchItem = this.state.searchItem;
-    // 3. change the page to /search/whaterecer-they-search-for
-    this.context.router.history.push(`/search/${searchItem}`);
-    this.search()
-  }
+
 
   render() {
     return (
@@ -98,13 +93,10 @@ class Main extends Component {
             <div className="app-header">
               <aside className="header-content">Liquor search app. Powered by LCBO API.</aside>
             </div>
-            <div>
-              <form className="search-form" onSubmit={this.handleSubmit}>
-                <input type="text" className="search-input" onChange={this.getSearchItem} placeholder="item name, item type or keywords" required />
-                <input type="submit" className="search-button" value="Search"/>
-              </form>
-            </div>
-            <Results results={this.state.results} />
+            <Search getSearchItem={this.getSearchItem} searchItem={this.state.searchItem} search={this.search} />
+            <ProductsContext.Provider value={this.state.results}>
+              <Results />
+            </ProductsContext.Provider>
             {!this.state.isFinalPage ? (
                 <button className="load-button" onClick={this.getMoreItem}>Load More</button>
               ) : this.state.loading ? (

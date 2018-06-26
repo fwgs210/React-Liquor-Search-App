@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Main from './components/Main';
 import SingleItem from './components/SingleItem';
-import { BrowserRouter, Route, HashRouter } from 'react-router-dom';
+import { BrowserRouter, Route, HashRouter, Redirect } from 'react-router-dom';
 
 
 class App extends Component {
