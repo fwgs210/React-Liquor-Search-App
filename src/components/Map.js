@@ -38,7 +38,6 @@ export class MapContainer extends Component {
 
  	getMapCenter = (props) => {
 		const {latitude, longitude} = props;
-		console.log(latitude, longitude)
 		this.setState({mapCenter: {lat: latitude, lng: longitude}})
 	}
 
@@ -46,12 +45,13 @@ export class MapContainer extends Component {
 	  	const style = {
 		  	width: '100%',
 		  	height: '100%',
-		  	position: 'relative'
+		  	position: 'relative',
+		  	mapStyles: [{ "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [{ "color": "#444444" }] }, { "featureType": "landscape", "elementType": "all", "stylers": [{ "color": "#f2f2f2" }] }, { "featureType": "poi", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "road", "elementType": "all", "stylers": [{ "saturation": -100 }, { "lightness": 45 }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "visibility": "simplified" }] }, { "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "transit", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "water", "elementType": "all", "stylers": [{ "color": "#46bcec" }, { "visibility": "on" }] }]
 		}
 
 		if (this.props.stores && this.props.stores != null) {
 	    	return (
-		      	<Map google={this.props.google} zoom={14} style={style} center={this.state.mapCenter} onClick={this.onMapClicked}>
+		      	<Map google={this.props.google} zoom={14} style={style} styles={style.mapStyles} center={this.state.mapCenter} onClick={this.onMapClicked}>
 						{this.props.stores.map((each,key)=> {
 							const {name, telephone, address_line_1, latitude, longitude} = each;
 			                return <Marker onClick={this.onMarkerClick} name={name} title={name} address={address_line_1} tel={telephone} position={{lat:latitude,lng:longitude}} key={key} />

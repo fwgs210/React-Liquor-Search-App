@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
+import AutoComplete from './AutoComplete';
 
 class Search extends Component {
 
@@ -14,16 +15,27 @@ class Search extends Component {
     // 2. grab the search query from the input box
     const searchItem = this.props.searchItem;
     // 3. change the page to /search/whaterecer-they-search-for
-    this.context.router.history.push(`/search/${searchItem}`);
-    this.props.search()
+    if (this.props.searchForProduct) {
+      this.context.router.history.push(`/search/${searchItem}`);
+    }
+    this.props.search(this.props.searchItem)
   }
 
   render() {
     return (
 			<form className="search-form" onSubmit={this.handleSubmit}>
-                <input type="text" className="search-input" onChange={this.props.getSearchItem} value={this.props.searchItem} placeholder="item name, item type or keywords" required />
-                <input type="submit" className="search-button" value="Search"/>
-            </form>
+          <select className="search-select" onChange={this.props.searchSwitch}>
+            <option disabled>Search Types</option>
+            <option value="forProduct">Products</option>
+            <option value="forStore">Stores</option>
+          </select>
+          {this.props.searchForProduct ? (
+            <input type="text" className="search-input" onChange={this.props.getSearchItem} value={this.props.searchItem} placeholder="item name, item type or keywords" required />
+          ) : (
+            <AutoComplete className="search-input" placeholder="city name, intersection or postal code" getAddress={this.props.getAddress} />
+          )}
+          <input type="submit" className="search-button" value="Search"/>
+      </form>
     )
   }
 

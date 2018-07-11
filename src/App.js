@@ -13,6 +13,7 @@ class App extends Component {
           <div className="container">
               <Route exact path="/" component={Main} />
               <Route path="/search/:searchItem" component={Main} />
+              <Route path="/stores/:searchAddress" component={Main} />
               <Route path="/products/:item" component={SingleItem} />
           </div>
         </section>

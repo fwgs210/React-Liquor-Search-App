@@ -4,6 +4,14 @@ import Stores from './Stores';
 import MapContainer from './Map';
 import Loader from './Loader';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import AutoComplete from './AutoComplete';
+import {
+    Accordion,
+    AccordionItem,
+    AccordionItemTitle,
+    AccordionItemBody,
+} from 'react-accessible-accordion';
+import 'react-accessible-accordion/dist/fancy-example.css';
 
 const MapContext = React.createContext();
 
@@ -22,10 +30,8 @@ class SingleItem extends Component {
 		stores: null,
 		city: '',
 		tabIndex: 0,
-		loading: false
+		loading: false,
 	}
-
-
 
 	getItemDetail = (itemId) => {
 		
@@ -50,33 +56,39 @@ class SingleItem extends Component {
 	    })
 	}
 
-	getSearchItem = (e) => {
-	  const city = e.target.value;
+	getSearchItem = (city) => {
 	  this.setState({city})
 	}
 
 	getStores = (e) => {
 		e.preventDefault();
 
-		const url = window.location.href.split('/');
-		const itemId = url[url.length - 1]
+		if (this.state.city) {
+			this.setState({badRequest: false})
+			const url = window.location.href.split('/');
+			const itemId = url[url.length - 1]
 
-	    axios.get(`https://lcboapi.com/stores?geo=${this.state.city}?product_id=${itemId}`,{
-	      headers: {
-	      'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
-	      }
-	    }).then(res => {
-	      if (res.status === 200 && res.data.result != undefined) {
-	      	this.setState({stores: res.data.result})
-	        console.log(res.data.result)
-	      } else {
-	        this.setState({badRequest: true})
-	      }
-	      console.log(res.data)
-	    })
-	    .catch(err => {
-	      console.log(err.message)
-	    })
+		    axios.get(`https://lcboapi.com/stores?geo=${this.state.city}?product_id=${itemId}`,{
+		      headers: {
+		      'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
+		      }
+		    }).then(res => {
+		      if (res.status === 200 && res.data.result != undefined) {
+		      	this.setState({stores: res.data.result})
+		        console.log(res.data.result)
+		      } else if (res.status === 400 || res.status === 403 || res.status === 500) {
+		      	this.setState({badRequest: true})
+		      } else {
+		        this.setState({badRequest: true})
+		      }
+		    })
+		    .catch(err => {
+		    	this.setState({badRequest: true})
+		      	console.log(err.message)
+		    })
+		} else {
+			this.setState({badRequest: true})
+		}
 	}
 
 	formattedPrice = (price) => {
@@ -90,7 +102,7 @@ class SingleItem extends Component {
 			const { name, origin, image_url, producer_name, serving_suggestion, style, tasting_note, price_in_cents } = this.state.itemInfo;
 			return (
 					<div className="row">
-						<div className="col-xs-12 col-sm-6">
+						<div className="col-xs-12 col-sm-8 col-sm-push-2">
 							<div className="block full-img">
 								{image_url != null && image_url != undefined && image_url.length > 0 ? (
 			                         	<img src={image_url} />
@@ -98,12 +110,7 @@ class SingleItem extends Component {
 			                         	<img src="https://www.novelupdates.com/img/noimagefound.jpg" />
 			                        )
 		                        }
-							</div>
-						</div>
-						<div className="col-xs-12 col-sm-6">
-							<div className="block">
 								<h1>{name}</h1>
-								<h3>Producer: {producer_name}</h3>
 				                <p><em>Origin: {origin}<br/>
 				                Style: {style}</em></p>
 					            {price_in_cents != null && price_in_cents != undefined ? (
@@ -112,19 +119,51 @@ class SingleItem extends Component {
 				                        <h2>No price listed!</h2>
 				                    )
 			                    }
-			                    <div className="item-note">
-					                <h4>Serving Suggestion:</h4>
-					                <p>{serving_suggestion}</p>
-					                <h4>Tasting Note</h4>
-					                <p>{tasting_note}</p>
-					            </div>
+							    <Accordion>
+							        <AccordionItem>
+							            <AccordionItemTitle>
+							                <h4 className="u-position-relative">Producer
+							                <div className="accordion__arrow" role="presentation"></div>
+							                </h4>
+							            </AccordionItemTitle>
+							            <AccordionItemBody>
+							                <p>{producer_name}</p>
+							            </AccordionItemBody>
+							        </AccordionItem>
+							        <AccordionItem>
+							            <AccordionItemTitle>
+							                <h4 className="u-position-relative">Serving Suggestion
+							                <div className="accordion__arrow" role="presentation"></div>
+							                </h4>
+							            </AccordionItemTitle>
+							            <AccordionItemBody>
+							                <p>{serving_suggestion}</p>
+							            </AccordionItemBody>
+							        </AccordionItem>
+							        <AccordionItem>
+							            <AccordionItemTitle>
+							                <h4 className="u-position-relative">Tasting Note
+							                <div className="accordion__arrow" role="presentation"></div>
+							                </h4>
+							            </AccordionItemTitle>
+							            <AccordionItemBody>
+							                <p>{tasting_note}</p>
+							            </AccordionItemBody>
+							        </AccordionItem>
+							    </Accordion>
 							</div>
+						</div>
+						<div className="col-xs-12 col-sm-8 col-sm-push-2">
 							<div className="block">
 								<h3>Find this item in nearby stores:</h3>
+
 								<form className="search-form square" onSubmit={this.getStores}>
-					                <input type="text" className="search-input square" onChange={this.getSearchItem} placeholder="City name, Intersection or Postal Code" required />
+									<AutoComplete className="search-input square" placeholder="city name, intersection or postal code" getAddress={this.getSearchItem} />
 					                <input type="submit" className="search-button square" value="Find"/>
 					            </form>
+					            {this.state.badRequest ? (
+					            	<p style={{color: '#D31C1D'}}>Please enter a proper address.</p>
+					            ) : (<span></span>)}
 					            {this.state.stores ? (
 						            	<MapContext.Provider value={this.state.stores}>
 								           	<Tabs className="store-tabs" selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })}>

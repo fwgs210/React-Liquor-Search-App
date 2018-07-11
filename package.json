@@ -1,13 +1,15 @@
 {
   "name": "Liquor_Search_App",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
     "google-maps-react": "^2.0.2",
     "prop-types": "^15.6.1",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0",
+    "react": "^16.4.1",
+    "react-accessible-accordion": "^2.4.3",
+    "react-dom": "^16.4.1",
+    "react-google-autocomplete": "^1.0.16",
     "react-scripts": "1.1.4",
     "react-slug": "^0.1.2",
     "react-tabs": "^2.2.2",
