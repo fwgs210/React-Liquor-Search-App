@@ -13,14 +13,26 @@ class Main extends Component {
 
   componentDidMount() {
     const searchItem = this.props.match.params.searchItem || undefined;
+    const searchAddress = this.props.match.params.searchAddress || undefined;
     if (searchItem != undefined) {
       this.search(searchItem)
       this.setState({searchItem})
     }
+    if (searchAddress != undefined) {
+      this.setState({searchForProduct: false, searchAddress: searchAddress})
+      this.getStores(searchAddress)
+    }
   }
 
   // componentWillReceiveProps(newProps) {
-  //   this.search(newProps.match.params.searchItem)
+  //   if (newProps.match.params.searchItem) {
+  //     this.search(newProps.match.params.searchItem)
+  //   }
+  //   if (newProps.match.params.searchAddress) {
+  //     console.log(newProps)
+  //     this.getStores(newProps.match.params.searchAddress)
+  //   }
+    
 
   // }
 
@@ -37,9 +49,8 @@ class Main extends Component {
   }
 
   search = (searchItem) => {
-    this.setState({loading: !this.state.loading, stores: null, results: null})
+      this.setState({loading: !this.state.loading, stores: null, results: null})
 
-    if (this.state.searchForProduct) {
       axios.get(`https://lcboapi.com/products?q=${searchItem || this.state.searchItem}`,{
         headers: {
         'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
@@ -55,9 +66,6 @@ class Main extends Component {
       .catch(err => {
         console.log(err.message)
       })
-    } else {
-      this.getStores()
-    }
   }
   checkFinalPage = (pager) => {
     const {is_final_page, next_page_path} = pager
@@ -107,10 +115,9 @@ class Main extends Component {
     this.setState({searchAddress})
   }
 
-  getStores = () => {
-    if (this.state.searchAddress) {
+  getStores = (searchAddress) => {
       this.setState({badRequest: false})
-        axios.get(`https://lcboapi.com/stores?geo=${this.state.searchAddress}`,{
+        axios.get(`https://lcboapi.com/stores?geo=${searchAddress || this.state.searchAddress}`,{
           headers: {
           'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
           }
@@ -127,9 +134,6 @@ class Main extends Component {
           this.setState({badRequest: true})
             console.log(err.message)
         })
-    } else {
-      this.setState({badRequest: true})
-    }
   }
 
 
@@ -139,7 +143,7 @@ class Main extends Component {
             <div className="app-header">
               <aside className="header-content">Liquor search app. Powered by LCBO API.</aside>
             </div>
-            <Search getSearchItem={this.getSearchItem} searchItem={this.state.searchItem} search={this.search} searchForProduct={this.state.searchForProduct} getAddress={this.getAddress} searchSwitch={this.searchSwitch}  />
+            <Search getSearchItem={this.getSearchItem} search={this.search} getStores={this.getStores} getAddress={this.getAddress} searchSwitch={this.searchSwitch} state={this.state}  />
             <ProductsContext.Provider value={this.state.results}>
               <Results />
             </ProductsContext.Provider>

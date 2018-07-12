@@ -17,15 +17,17 @@ export class MapContainer extends Component {
 	    showingInfoWindow: false,
 	    activeMarker: {},
 	    selectedPlace: {},
+	    markers: [],
 	    mapCenter: null
 	};
 
-	onMarkerClick = (props, marker, e) =>
+	onMarkerClick = (props, marker, e) => {
 	    this.setState({
 	      selectedPlace: props,
 	      activeMarker: marker,
 	      showingInfoWindow: true
-	});
+		});
+	}
 	 
 	onMapClicked = (props) => {
 	    if (this.state.showingInfoWindow) {

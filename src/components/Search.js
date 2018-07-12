@@ -13,23 +13,26 @@ class Search extends Component {
     // 1. we need to stop the form from submitting
     e.preventDefault();
     // 2. grab the search query from the input box
-    const searchItem = this.props.searchItem;
+    const { searchItem, searchAddress, searchForProduct } = this.props.state;
     // 3. change the page to /search/whaterecer-they-search-for
-    if (this.props.searchForProduct) {
+    if (searchForProduct) {
       this.context.router.history.push(`/search/${searchItem}`);
+      this.props.search()
+    } else {
+      this.context.router.history.push(`/stores/${searchAddress}`);
+      this.props.getStores()
     }
-    this.props.search(this.props.searchItem)
   }
 
-  render() {
+  render() { 
     return (
 			<form className="search-form" onSubmit={this.handleSubmit}>
-          <select className="search-select" onChange={this.props.searchSwitch}>
+          <select className="search-select" onChange={this.props.searchSwitch} value={this.props.state.searchForProduct ? ("forProduct") : ("forStore")}>
             <option disabled>Search Types</option>
             <option value="forProduct">Products</option>
             <option value="forStore">Stores</option>
           </select>
-          {this.props.searchForProduct ? (
+          {this.props.state.searchForProduct ? (
             <input type="text" className="search-input" onChange={this.props.getSearchItem} value={this.props.searchItem} placeholder="item name, item type or keywords" required />
           ) : (
             <AutoComplete className="search-input" placeholder="city name, intersection or postal code" getAddress={this.props.getAddress} />
