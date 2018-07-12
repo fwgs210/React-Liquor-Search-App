@@ -155,7 +155,7 @@ class SingleItem extends Component {
 						</div>
 						<div className="col-xs-12 col-sm-8 col-sm-push-2">
 							<div className="block">
-								<h3>Find this item in nearby stores:</h3>
+								<h3 className="text-center">Find this item in nearby stores:</h3>
 
 								<form className="search-form square" onSubmit={this.getStores}>
 									<AutoComplete className="search-input square" placeholder="city name, intersection or postal code" getAddress={this.getSearchItem} />
