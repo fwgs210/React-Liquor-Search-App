@@ -26,19 +26,25 @@ class Search extends Component {
 
   render() { 
     return (
-			<form className="search-form" onSubmit={this.handleSubmit}>
-          <select className="search-select" onChange={this.props.searchSwitch} value={this.props.state.searchForProduct ? ("forProduct") : ("forStore")}>
-            <option disabled>Search Types</option>
-            <option value="forProduct">Products</option>
-            <option value="forStore">Stores</option>
-          </select>
-          {this.props.state.searchForProduct ? (
-            <input type="text" className="search-input" onChange={this.props.getSearchItem} value={this.props.searchItem} placeholder="item name, item type or keywords" required />
-          ) : (
-            <AutoComplete className="search-input" placeholder="city name, intersection or postal code" getAddress={this.props.getAddress} />
-          )}
-          <input type="submit" className="search-button" value="Search"/>
-      </form>
+      <section>
+  			<form className="search-form" onSubmit={this.handleSubmit}>
+            <select className="search-select" onChange={this.props.searchSwitch} value={this.props.state.searchForProduct ? ("forProduct") : ("forStore")}>
+              <option disabled>Search Types</option>
+              <option value="forProduct">Products</option>
+              <option value="forStore">Stores</option>
+            </select>
+            {this.props.state.searchForProduct ? (
+              <input type="text" className="search-input" onChange={this.props.getSearchItem} value={this.props.state.searchItem} placeholder="item name, item type or keywords" required />
+            ) : (
+              <AutoComplete className="search-input" placeholder="city name, intersection or postal code" getAddress={this.props.getAddress} value={this.props.searchAddress} />
+            )}
+            <input type="submit" className="search-button" value="Search"/>
+        </form>
+        {this.props.state.badRequest ? (
+          <p style={{color: '#D31C1D', textAlign: 'center'}}>Please enter a proper search term or address.</p>
+          ) : (<span></span>)
+        }
+      </section>
     )
   }
 

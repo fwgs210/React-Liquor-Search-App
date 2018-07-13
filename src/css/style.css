@@ -150,6 +150,7 @@ img {
     color: #333;
     background: none;
     display: block;
+    border-radius: 5px;
 }
 .search-button:focus, .load-button:focus, .search-input:focus, .square.search-input:focus {
     border-color: rgba(125,125,125,.5);

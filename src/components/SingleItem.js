@@ -45,7 +45,6 @@ class SingleItem extends Component {
 	    }).then(res => {
 	      if (res.status === 200 && res.data.result != undefined) {
 	      	this.setState({itemInfo: res.data.result,loading: !this.state.loading})
-	      	console.log(res.data)
 	      } else {
 	        this.setState({badRequest: true, loading: !this.state.loading})
 	      }
@@ -162,7 +161,7 @@ class SingleItem extends Component {
 					                <input type="submit" className="search-button square" value="Find"/>
 					            </form>
 					            {this.state.badRequest ? (
-					            	<p style={{color: '#D31C1D'}}>Please enter a proper address.</p>
+					            	<p style={{color: '#D31C1D',textAlign: 'center'}}>Please enter a proper address.</p>
 					            ) : (<span></span>)}
 					            {this.state.stores ? (
 						            	<MapContext.Provider value={this.state.stores}>

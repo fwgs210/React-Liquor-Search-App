@@ -49,22 +49,24 @@ class Main extends Component {
   }
 
   search = (searchItem) => {
-      this.setState({loading: !this.state.loading, stores: null, results: null})
+      this.setState({loading: true, stores: null, results: null})
 
       axios.get(`https://lcboapi.com/products?q=${searchItem || this.state.searchItem}`,{
         headers: {
         'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
         }
       }).then(res => {
-        if (res.status === 200 && res.data.result != undefined) {
-          this.setState({results: res.data.result,loading: !this.state.loading})
+        if (res.status === 200 && res.data.result != undefined && res.data.result.length > 0) {
+          this.setState({results: res.data.result,loading: false, badRequest:false})
           this.checkFinalPage(res.data.pager)
         } else {
-          this.setState({loading: !this.state.loading})
+          this.setState({loading: false, badRequest: true})
+          console.log('error')
         }
       })
       .catch(err => {
         console.log(err.message)
+        this.setState({loading: false, badRequest: true})
       })
   }
   checkFinalPage = (pager) => {
@@ -83,22 +85,25 @@ class Main extends Component {
 
   getMoreItem = () => {
     if(this.state.isFinalPage != true && this.state.nextPage.length > 0) {
+      this.setState({loading: true})
       axios.get(`https://lcboapi.com/${this.state.nextPage}`,{
         headers: {
         'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
         }
       }).then(res => {
-        if (res.status === 200 && res.data.result != undefined) {
+        if (res.status === 200 && res.data.result != undefined && res.data.result.length > 0) {
           const newResults = this.state.results.concat(res.data.result)
-          this.setState({results: newResults,loading: !this.state.loading})
+          this.setState({results: newResults,loading: false, badRequest:false})
           this.checkFinalPage(res.data.pager)
         } else {
-          this.setState({loading: !this.state.loading})
+          this.setState({loading: false, badRequest: true})
+          console.log('error')
         }
         
       })
       .catch(err => {
         console.log(err.message)
+        this.setState({loading: false, badRequest: true})
       })
     }
   }
