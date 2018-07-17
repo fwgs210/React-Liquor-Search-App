@@ -117,7 +117,12 @@ class Main extends Component {
   }
 
   getAddress = (searchAddress) => {
-    this.setState({searchAddress})
+    if (typeof searchAddress === 'string') {
+      this.setState({searchAddress})
+    } else {
+      this.setState({searchAddress: searchAddress.target.value})
+    }
+    
   }
 
   getStores = (searchAddress) => {

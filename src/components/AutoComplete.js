@@ -8,13 +8,17 @@ class AutoComplete extends Component {
 					type="text"
 					className={this.props.className}
 					onPlaceSelected={(place) => {
-							this.props.getAddress(place.formatted_address)
+							if (place.formatted_address) {
+								this.props.getAddress(place.formatted_address)
+							} else {
+								this.props.getAddress(place.name)
+							}
 					}}
 					types={['address']}
-					ref={(q) => this.q = q}
-					onChange={() => this.props.getAddress(this.q.refs.input.value)}
+					onChange={(e) => this.props.getAddress(e)}
 					componentRestrictions={{country: "ca"}}
 					placeholder={this.props.placeholder}
+					value={this.props.value}
 					required
 				/>
 

@@ -36,7 +36,7 @@ class Search extends Component {
             {this.props.state.searchForProduct ? (
               <input type="text" className="search-input" onChange={this.props.getSearchItem} value={this.props.state.searchItem} placeholder="item name, item type or keywords" required />
             ) : (
-              <AutoComplete className="search-input" placeholder="city name, intersection or postal code" getAddress={this.props.getAddress} value={this.props.searchAddress} />
+              <AutoComplete className="search-input" placeholder="city name, intersection or postal code" getAddress={this.props.getAddress} value={this.props.state.searchAddress} />
             )}
             <input type="submit" className="search-button" value="Search"/>
         </form>
