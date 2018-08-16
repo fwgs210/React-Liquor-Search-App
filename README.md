@@ -1,1 +1,1 @@
-# React-Liquor-Search-App
+# React-Liquor-Search-App | added Redux
