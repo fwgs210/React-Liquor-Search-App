@@ -9,7 +9,7 @@ class Results extends Component {
 		return (
 			<ProductsContext.Consumer>
 				{results => (
-					typeof results == 'string' ? (
+					typeof results === 'string' ? (
 						<div>{this.props.results}</div>
 					) : results ? (
 						<ProductList results={results} />

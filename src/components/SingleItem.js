@@ -1,36 +1,38 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Stores from './Stores';
-import MapContainer from './Map';
 import Loader from './Loader';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import ItemTabs from './ItemTabs';
+import { ItemAccordions } from './ItemAccordions';
 import AutoComplete from './AutoComplete';
-import {
-    Accordion,
-    AccordionItem,
-    AccordionItemTitle,
-    AccordionItemBody,
-} from 'react-accessible-accordion';
-import 'react-accessible-accordion/dist/fancy-example.css';
+import { mutations } from '../actions';
+import { connect } from 'react-redux';
 
-const MapContext = React.createContext();
+
+const mstp = state => (state)
+const mdtp = (dispatch) => ({
+  updateState(newState) {
+    const action = mutations.setState(newState);
+    dispatch(action)
+  }
+});
 
 class SingleItem extends Component {
 
 	componentDidMount() {
 	    const itemId = this.props.match.params.item || undefined;
-	    if (itemId != undefined) {
+	    if (itemId !== undefined) {
 	    	this.getItemDetail(itemId)
 	    }
 	}
 
-	state = {
-		badRequest: false,
-		itemInfo: null,
-		stores: null,
-		city: '',
-		tabIndex: 0,
-		loading: false,
+	constructor({updateState}) {
+		super();
+		this.state = {
+			city: '',
+			tabIndex: 0,
+			loading: false,
+		}
+		this.updateState = updateState;
 	}
 
 	getItemDetail = (itemId) => {
@@ -43,8 +45,9 @@ class SingleItem extends Component {
 	      'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
 	      }
 	    }).then(res => {
-	      if (res.status === 200 && res.data.result != undefined) {
-	      	this.setState({itemInfo: res.data.result,loading: !this.state.loading})
+	      if (res.status === 200 && res.data.result !== undefined) {
+	      	this.updateState({itemInfo: res.data.result})
+	      	this.setState({loading: !this.state.loading})
 	      } else {
 	        this.setState({badRequest: true, loading: !this.state.loading})
 	      }
@@ -61,7 +64,7 @@ class SingleItem extends Component {
 
 	getStores = (e) => {
 		e.preventDefault();
-
+		this.setState({loading: !this.state.loading})
 		if (this.state.city) {
 			this.setState({badRequest: false})
 			const url = window.location.href.split('/');
@@ -72,21 +75,21 @@ class SingleItem extends Component {
 		      'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
 		      }
 		    }).then(res => {
-		      if (res.status === 200 && res.data.result != undefined) {
-		      	this.setState({stores: res.data.result})
-		        console.log(res.data.result)
+		      if (res.status === 200 && res.data.result !== undefined) {
+		      	this.updateState({stores: res.data.result})
+		      	this.setState({loading: !this.state.loading})
 		      } else if (res.status === 400 || res.status === 403 || res.status === 500) {
-		      	this.setState({badRequest: true})
+		      	this.setState({badRequest: true,loading: !this.state.loading})
 		      } else {
-		        this.setState({badRequest: true})
+		        this.setState({badRequest: true,loading: !this.state.loading})
 		      }
 		    })
 		    .catch(err => {
-		    	this.setState({badRequest: true})
+		    	this.setState({badRequest: true,loading: !this.state.loading})
 		      	console.log(err.message)
 		    })
 		} else {
-			this.setState({badRequest: true})
+			this.setState({badRequest: true,loading: !this.state.loading})
 		}
 	}
 
@@ -97,59 +100,28 @@ class SingleItem extends Component {
 	}
  
 	render() {
-		if (this.state.itemInfo) {
-			const { name, origin, image_url, producer_name, serving_suggestion, style, tasting_note, price_in_cents } = this.state.itemInfo;
+		if (this.props.state.itemInfo) {
+			const { name, origin, image_url, producer_name, serving_suggestion, style, tasting_note, price_in_cents } = this.props.state.itemInfo;
 			return (
 					<div className="row">
 						<div className="col-xs-12 col-sm-8 col-sm-push-2">
 							<div className="block full-img">
-								{image_url != null && image_url != undefined && image_url.length > 0 ? (
-			                         	<img src={image_url} />
+								{image_url !== null && image_url !== undefined && image_url.length > 0 ? (
+			                         	<img src={image_url} alt={name} />
 			                        ) : (
-			                         	<img src="https://www.novelupdates.com/img/noimagefound.jpg" />
+			                         	<img src="https://www.novelupdates.com/img/noimagefound.jpg" alt="image not found" />
 			                        )
 		                        }
 								<h1>{name}</h1>
 				                <p><em>Origin: {origin}<br/>
 				                Style: {style}</em></p>
-					            {price_in_cents != null && price_in_cents != undefined ? (
+					            {price_in_cents !== null && price_in_cents !== undefined ? (
 					            		this.formattedPrice(price_in_cents)
 				                    ) : (
 				                        <h2>No price listed!</h2>
 				                    )
 			                    }
-							    <Accordion>
-							        <AccordionItem>
-							            <AccordionItemTitle>
-							                <h4 className="u-position-relative">Producer
-							                <div className="accordion__arrow" role="presentation"></div>
-							                </h4>
-							            </AccordionItemTitle>
-							            <AccordionItemBody>
-							                <p>{producer_name}</p>
-							            </AccordionItemBody>
-							        </AccordionItem>
-							        <AccordionItem>
-							            <AccordionItemTitle>
-							                <h4 className="u-position-relative">Serving Suggestion
-							                <div className="accordion__arrow" role="presentation"></div>
-							                </h4>
-							            </AccordionItemTitle>
-							            <AccordionItemBody>
-							                <p>{serving_suggestion}</p>
-							            </AccordionItemBody>
-							        </AccordionItem>
-							        <AccordionItem>
-							            <AccordionItemTitle>
-							                <h4 className="u-position-relative">Tasting Note
-							                <div className="accordion__arrow" role="presentation"></div>
-							                </h4>
-							            </AccordionItemTitle>
-							            <AccordionItemBody>
-							                <p>{tasting_note}</p>
-							            </AccordionItemBody>
-							        </AccordionItem>
-							    </Accordion>
+			                    <ItemAccordions producer_name={producer_name} serving_suggestion={serving_suggestion} tasting_note={tasting_note} />
 							</div>
 						</div>
 						<div className="col-xs-12 col-sm-8 col-sm-push-2">
@@ -163,37 +135,7 @@ class SingleItem extends Component {
 					            {this.state.badRequest ? (
 					            	<p style={{color: '#D31C1D',textAlign: 'center'}}>Please enter a proper address.</p>
 					            ) : (<span></span>)}
-					            {this.state.stores ? (
-						            	<MapContext.Provider value={this.state.stores}>
-								           	<Tabs className="store-tabs" selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })}>
-												<TabList>
-											    	<Tab>List View</Tab>
-											    	<Tab>Map View</Tab>
-												</TabList>
-												<TabPanel>
-													<MapContext.Consumer>
-      													{stores => (
-															<Stores stores={stores} />
-														)}
-													</MapContext.Consumer>
-												</TabPanel>
-												<TabPanel>
-													<article className="map-container">
-														<MapContext.Consumer>
-      														{stores => (
-																<MapContainer stores={stores} />
-															)}
-														</MapContext.Consumer>
-													</article>
-												</TabPanel>
-											</Tabs>
-										</MapContext.Provider>
-									) : this.state.loading ? (
-										<Loader />
-									) : (
-										<div></div>
-									)
-								}
+					            <ItemTabs loading={this.state.loading} />
 							</div>
 						</div>
 					</div>
@@ -217,4 +159,4 @@ class SingleItem extends Component {
 	}
 }
 
-export default SingleItem;
+export default connect(mstp, mdtp)(SingleItem);

@@ -5,25 +5,36 @@ import Results from './Results';
 import axios from 'axios';
 import MapContainer from './Map';
 import Stores from './Stores';
+import { mutations } from '../actions';
+import { connect } from 'react-redux';
 
 
 export const ProductsContext = React.createContext();
+
+const mstp = ({state}) => state;
+
+const mdtp = (dispatch) => ({
+  updateState(newState) {
+    const action = mutations.setState(newState);
+    dispatch(action)
+  }
+})
 
 class Main extends Component {
 
   componentDidMount() {
     const searchItem = this.props.match.params.searchItem || undefined;
     const searchAddress = this.props.match.params.searchAddress || undefined;
-    if (searchItem != undefined) {
+    if (searchItem !== undefined) {
       this.search(searchItem)
       this.setState({searchItem})
     }
-    if (searchAddress != undefined) {
+    if (searchAddress !== undefined) {
       this.setState({searchForProduct: false, searchAddress: searchAddress})
       this.getStores(searchAddress)
     }
   }
-
+ 
   // componentWillReceiveProps(newProps) {
   //   if (newProps.match.params.searchItem) {
   //     this.search(newProps.match.params.searchItem)
@@ -35,29 +46,25 @@ class Main extends Component {
     
 
   // }
-
   state = {
     badRequest: false,
     searchItem: '',
     searchAddress: '',
     searchForProduct: true,
-    loading: false,
-    isFinalPage: true,
-    nextPage: '',
-    stores: null,
-    results: null
+    loading: false
   }
 
   search = (searchItem) => {
-      this.setState({loading: true, stores: null, results: null})
+      this.setState({loading: true})
 
       axios.get(`https://lcboapi.com/products?q=${searchItem || this.state.searchItem}`,{
         headers: {
         'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
         }
       }).then(res => {
-        if (res.status === 200 && res.data.result != undefined && res.data.result.length > 0) {
-          this.setState({results: res.data.result,loading: false, badRequest:false})
+        if (res.status === 200 && res.data.result !== undefined && res.data.result.length > 0) {
+          this.setState({loading: false})
+          this.props.updateState({results: res.data.result, stores: null})
           this.checkFinalPage(res.data.pager)
         } else {
           this.setState({loading: false, badRequest: true})
@@ -72,9 +79,9 @@ class Main extends Component {
   checkFinalPage = (pager) => {
     const {is_final_page, next_page_path} = pager
     if (is_final_page) {
-      this.setState({isFinalPage: true})
+      this.props.updateState({isFinalPage: true, nextPage: ''})
     } else {
-      this.setState({isFinalPage: false, nextPage: next_page_path})
+      this.props.updateState({isFinalPage: false, nextPage: next_page_path})
     }
   }
 
@@ -84,16 +91,17 @@ class Main extends Component {
   }
 
   getMoreItem = () => {
-    if(this.state.isFinalPage != true && this.state.nextPage.length > 0) {
+    if(!this.props.isFinalPage && this.props.nextPage.length > 0) {
       this.setState({loading: true})
-      axios.get(`https://lcboapi.com/${this.state.nextPage}`,{
+      axios.get(`https://lcboapi.com/${this.props.nextPage}`,{
         headers: {
         'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
         }
       }).then(res => {
-        if (res.status === 200 && res.data.result != undefined && res.data.result.length > 0) {
-          const newResults = this.state.results.concat(res.data.result)
-          this.setState({results: newResults,loading: false, badRequest:false})
+        if (res.status === 200 && res.data.result !== undefined && res.data.result.length > 0) {
+          const newResults = this.props.results.concat(res.data.result)
+          this.setState({loading: false})
+          this.props.updateState({results: newResults})
           this.checkFinalPage(res.data.pager)
         } else {
           this.setState({loading: false, badRequest: true})
@@ -126,53 +134,57 @@ class Main extends Component {
   }
 
   getStores = (searchAddress) => {
-      this.setState({badRequest: false})
+      this.setState({badRequest: false, loading: true})
         axios.get(`https://lcboapi.com/stores?geo=${searchAddress || this.state.searchAddress}`,{
           headers: {
           'Authorization': 'Token MDpkMWEyZmQ1OC03NDA0LTExZTgtYjQ1NS0yYmI2ZmQ0NDk5NzQ6NHRzaHdOdHNvQnh4bEQxTkpFY2twYXBrZnZoSzc5eG1lVTVC'
           }
         }).then(res => {
-          if (res.status === 200 && res.data.result != undefined) {
-            this.setState({stores: res.data.result, loading:false})
+          if (res.status === 200 && res.data.result !== undefined) {
+            this.setState({loading:false})
+            this.props.updateState({stores: res.data.result, results: null})
           } else if (res.status === 400 || res.status === 403 || res.status === 500) {
-            this.setState({badRequest: true})
+            this.setState({badRequest: true, loading:false})
+            this.props.updateState({stores: null, results: null})
           } else {
-            this.setState({badRequest: true})
+            this.setState({badRequest: true, loading:false})
+            this.props.updateState({stores: null, results: null})
           }
         })
         .catch(err => {
-          this.setState({badRequest: true})
+          this.setState({badRequest: true, loading:false})
             console.log(err.message)
         })
   }
 
 
   render() {
+    const { results, isFinalPage, stores } = this.props
     return (
           <article className="block">
             <div className="app-header">
               <aside className="header-content">Liquor search app. Powered by LCBO API.</aside>
             </div>
             <Search getSearchItem={this.getSearchItem} search={this.search} getStores={this.getStores} getAddress={this.getAddress} searchSwitch={this.searchSwitch} state={this.state}  />
-            <ProductsContext.Provider value={this.state.results}>
+            <ProductsContext.Provider value={results}>
               <Results />
             </ProductsContext.Provider>
-            {!this.state.isFinalPage && this.state.results ? (
+            {!isFinalPage && results ? (
                 <button className="load-button" onClick={this.getMoreItem}>Load More</button>
-              ) : this.state.loading ? (
-                <Loader />
               ) : (
                 <div className="text-center invisible">No more item</div>
               )
             }
-            {this.state.stores ? (
+            {this.state.loading ? (
+                <Loader />
+              ) : stores ? (
                 <div className="row main-map">
                   <div className="col-xs-12 col-sm-4">
-                    <Stores stores={this.state.stores} />
+                    <Stores stores={stores} />
                   </div>
                   <div className="col-xs-12 col-sm-8">
                     <article className="map-container">
-                      <MapContainer stores={this.state.stores} />
+                      <MapContainer stores={stores} />
                     </article>
                   </div>
                 </div>
@@ -185,4 +197,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default connect(mstp,mdtp)(Main);

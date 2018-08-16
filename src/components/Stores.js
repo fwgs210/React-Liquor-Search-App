@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 class Stores extends Component {
 
 	render() {
-		if (this.props.stores && this.props.stores != undefined && this.props.stores != null) {
+		if (this.props.stores && this.props.stores !== undefined && this.props.stores !== null) {
 			return (
 				<div className="store-lists">
 					{this.props.stores.map((each, key) => {
